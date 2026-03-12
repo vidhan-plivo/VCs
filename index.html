@@ -301,9 +301,13 @@
     }
 
     function downloadVCard(person) {
+      const parts = person.name.trim().split(/\s+/);
+      const firstName = parts[0] || '';
+      const lastName = parts.slice(1).join(' ') || '';
       const vcf = [
         'BEGIN:VCARD',
         'VERSION:3.0',
+        `N:${lastName};${firstName};;;`,
         `FN:${person.name}`,
         `ORG:Plivo`,
         `TITLE:${person.role}`,
