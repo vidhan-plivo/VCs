@@ -270,13 +270,13 @@
         </svg>
         Linkedin
       </a>
-      <button id="btn-email" class="btn-pill" onclick="copyEmail()">
+      <a id="btn-email" href="#" class="btn-pill">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="2" y="4" width="20" height="16" rx="2"/>
           <path d="M22 4L12 13L2 4"/>
         </svg>
         Email
-      </button>
+      </a>
     </div>
 
     <div class="bottom-section">
@@ -300,28 +300,28 @@
       setTimeout(() => toast.classList.remove('show'), 2500);
     }
 
-    function copyEmail() {
-      const email = document.getElementById('btn-email').dataset.email;
-      if (!email) return;
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(email)
-          .then(() => showToast(`${email} copied!`))
-          .catch(() => fallbackCopy(email));
-      } else {
-        fallbackCopy(email);
-      }
-    }
+    function downloadVCard(person) {
+      const vcf = [
+        'BEGIN:VCARD',
+        'VERSION:3.0',
+        `FN:${person.name}`,
+        `ORG:Plivo`,
+        `TITLE:${person.role}`,
+        `EMAIL;TYPE=WORK:${person.email}`,
+        person.linkedin ? `URL:${person.linkedin}` : '',
+        'END:VCARD'
+      ].filter(Boolean).join('\r\n');
 
-    function fallbackCopy(text) {
-      const ta = document.createElement('textarea');
-      ta.value = text;
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand('copy');
-      document.body.removeChild(ta);
-      showToast(`${text} copied!`);
+      const blob = new Blob([vcf], { type: 'text/vcard;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${person.name.replace(/\s+/g, '_')}.vcf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('Contact saved!');
     }
 
     async function loadPerson() {
@@ -336,15 +336,19 @@
       }
 
       try {
-        const res = await fetch(`/api/people/${encodeURIComponent(personId)}`);
-        if (!res.ok) {
+        const res = await fetch('people.json');
+        if (!res.ok) throw new Error('Could not load data');
+
+        const people = await res.json();
+        const person = people.find(p => p.id === personId);
+
+        if (!person) {
           document.getElementById('person-name').textContent = 'Person not found';
           document.getElementById('person-role').textContent = 'Check the URL and try again';
           document.getElementById('person-role').classList.add('state-message', 'error');
           return;
         }
 
-        const person = await res.json();
         document.title = `${person.name} - Plivo`;
         document.getElementById('person-name').textContent = person.name;
         document.getElementById('person-role').textContent = person.role;
@@ -359,7 +363,13 @@
           btnLinkedin.style.display = 'none';
         }
 
-        btnEmail.dataset.email = person.email;
+        // Email button triggers vCard download (saves contact to phone)
+        btnEmail.href = '#';
+        btnEmail.addEventListener('click', (e) => {
+          e.preventDefault();
+          downloadVCard(person);
+        });
+
         buttons.style.display = 'flex';
 
         if (person.gradientBg) {
@@ -368,7 +378,7 @@
 
       } catch (err) {
         document.getElementById('person-name').textContent = 'Error loading';
-        document.getElementById('person-role').textContent = 'Could not connect to server';
+        document.getElementById('person-role').textContent = 'Could not load data';
         document.getElementById('person-role').classList.add('state-message', 'error');
       }
     }
