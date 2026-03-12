@@ -336,9 +336,9 @@
       const personId = params.get('p');
 
       if (!personId) {
-        document.getElementById('person-name').textContent = 'No person specified';
-        document.getElementById('person-role').textContent = 'Use ?p=person-slug in the URL';
-        document.getElementById('person-role').classList.add('state-message');
+        document.getElementById('person-name').textContent = 'Are you looking for somebody at Plivo?';
+        document.getElementById('person-role').textContent = '';
+        document.getElementById('person-name').style.fontSize = '20px';
         return;
       }
 
