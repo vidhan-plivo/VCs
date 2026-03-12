@@ -7,11 +7,19 @@
     "email": "intern-vidhan@plivo.com"
   },
   {
-    "id": "ayushi",
-    "name": "Ayushi",
-    "role": "Brand and Design Lead",
+    "id": "ayushi-gaur",
+    "name": "Ayushi Gaur",
+    "role": "Brand & Design Lead",
     "linkedin": "https://www.linkedin.com/in/ayushi-gaur-/",
-    "email": "ayushi.gaur@plivo.com"
+    "email": "ayushi.gaur@plivo.com",
+    "gradientBg": ""
+  },
+  {
+    "id": "vedang-patil",
+    "name": "Vedang Patil",
+    "role": "Forward Deployed Engineer",
+    "linkedin": "https://www.linkedin.com/in/vedang-patil23/",
+    "email": "vedang.patil@plivo.com",
+    "gradientBg": ""
   }
-  
 ]
