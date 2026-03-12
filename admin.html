@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Plivo Visiting Cards</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Sora', sans-serif;
+      background: #f5f5f5;
+      color: #111;
+      padding: 32px 24px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 32px;
+    }
+
+    /* Form */
+    .form-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 28px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      margin-bottom: 32px;
+    }
+
+    .form-card h2 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #444;
+    }
+
+    input {
+      font-family: 'Sora', sans-serif;
+      font-size: 14px;
+      padding: 10px 14px;
+      border: 1.5px solid #ddd;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus {
+      border-color: #274DFF;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .btn {
+      font-family: 'Sora', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 24px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: #000;
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #333;
+    }
+
+    .btn-secondary {
+      background: #eee;
+      color: #333;
+    }
+
+    .btn-secondary:hover {
+      background: #ddd;
+    }
+
+    /* People list */
+    .people-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .person-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .person-info h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .person-info p {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 6px;
+    }
+
+    .person-link {
+      font-size: 11px;
+      color: #274DFF;
+      text-decoration: none;
+      word-break: break-all;
+    }
+
+    .person-link:hover {
+      text-decoration: underline;
+    }
+
+    .person-actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .btn-icon {
+      font-size: 12px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      background: #fff;
+      cursor: pointer;
+      font-family: 'Sora', sans-serif;
+      transition: all 0.2s;
+    }
+
+    .btn-icon:hover {
+      background: #f5f5f5;
+    }
+
+    .btn-icon.danger {
+      color: #d00;
+      border-color: #fcc;
+    }
+
+    .btn-icon.danger:hover {
+      background: #fff0f0;
+    }
+
+    .empty {
+      text-align: center;
+      color: #999;
+      font-size: 14px;
+      padding: 40px 0;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #111;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 13px;
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 100;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 500px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .person-card {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .person-actions {
+        width: 100%;
+      }
+
+      .btn-icon {
+        flex: 1;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Visiting Cards</h1>
+  <p class="subtitle">Manage Plivo team visiting cards. Each person gets a shareable link.</p>
+
+  <div class="form-card">
+    <h2 id="form-title">Add new person</h2>
+    <form id="person-form">
+      <input type="hidden" id="edit-id">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" placeholder="Vedang Patil" required>
+        </div>
+        <div class="form-group">
+          <label for="role">Role</label>
+          <input type="text" id="role" placeholder="Forward Deployed Engineer Lead" required>
+        </div>
+        <div class="form-group">
+          <label for="linkedin">LinkedIn URL</label>
+          <input type="url" id="linkedin" placeholder="https://linkedin.com/in/...">
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="name@plivo.com" required>
+        </div>
+        <div class="form-group full">
+          <label for="gradientBg">Gradient BG Image Path</label>
+          <input type="text" id="gradientBg" placeholder="assets/gradient-bg.png (leave empty for default)">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" id="submit-btn">Add Person</button>
+        <button type="button" class="btn btn-secondary" id="cancel-btn" style="display:none" onclick="cancelEdit()">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="people-list" id="people-list">
+    <p class="empty">Loading...</p>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const form = document.getElementById('person-form');
+    const listEl = document.getElementById('people-list');
+    let editingId = null;
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    function getCardUrl(id) {
+      return `${window.location.origin}/?p=${id}`;
+    }
+
+    async function loadPeople() {
+      const res = await fetch('/api/people');
+      const people = await res.json();
+
+      if (people.length === 0) {
+        listEl.innerHTML = '<p class="empty">No people added yet. Add one above.</p>';
+        return;
+      }
+
+      listEl.innerHTML = people.map(p => `
+        <div class="person-card">
+          <div class="person-info">
+            <h3>${esc(p.name)}</h3>
+            <p>${esc(p.role)} &middot; ${esc(p.email)}</p>
+            <a class="person-link" href="${getCardUrl(p.id)}" target="_blank">${getCardUrl(p.id)}</a>
+          </div>
+          <div class="person-actions">
+            <button class="btn-icon" onclick="startEdit('${p.id}')">Edit</button>
+            <button class="btn-icon danger" onclick="deletePerson('${p.id}')">Delete</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function esc(str) {
+      const d = document.createElement('div');
+      d.textContent = str;
+      return d.innerHTML;
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = {
+        name: document.getElementById('name').value.trim(),
+        role: document.getElementById('role').value.trim(),
+        linkedin: document.getElementById('linkedin').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        gradientBg: document.getElementById('gradientBg').value.trim(),
+      };
+
+      if (editingId) {
+        const res = await fetch(`/api/people/${editingId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        if (!res.ok) {
+          const err = await res.json();
+          return showToast(err.error || 'Error updating');
+        }
+        showToast('Updated successfully');
+        cancelEdit();
+      } else {
+        const res = await fetch('/api/people', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        if (!res.ok) {
+          const err = await res.json();
+          return showToast(err.error || 'Error creating');
+        }
+        showToast('Person added');
+        form.reset();
+      }
+
+      loadPeople();
+    });
+
+    async function startEdit(id) {
+      const res = await fetch(`/api/people/${id}`);
+      const p = await res.json();
+
+      document.getElementById('name').value = p.name;
+      document.getElementById('role').value = p.role;
+      document.getElementById('linkedin').value = p.linkedin;
+      document.getElementById('email').value = p.email;
+      document.getElementById('gradientBg').value = p.gradientBg || '';
+      document.getElementById('edit-id').value = id;
+      document.getElementById('form-title').textContent = `Edit ${p.name}`;
+      document.getElementById('submit-btn').textContent = 'Save Changes';
+      document.getElementById('cancel-btn').style.display = '';
+      editingId = id;
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function cancelEdit() {
+      form.reset();
+      editingId = null;
+      document.getElementById('edit-id').value = '';
+      document.getElementById('form-title').textContent = 'Add new person';
+      document.getElementById('submit-btn').textContent = 'Add Person';
+      document.getElementById('cancel-btn').style.display = 'none';
+    }
+
+    async function deletePerson(id) {
+      if (!confirm('Delete this person? This cannot be undone.')) return;
+      await fetch(`/api/people/${id}`, { method: 'DELETE' });
+      showToast('Person deleted');
+      loadPeople();
+    }
+
+    loadPeople();
+  </script>
+
+</body>
+</html>

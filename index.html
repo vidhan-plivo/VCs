@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Plivo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      background: #f0f0f0;
+    }
+
+    body {
+      font-family: 'Sora', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100dvh;
+      padding: 24px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 400px;
+      min-height: 600px;
+      background: #fff;
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
+      padding: 48px 40px 28px;
+    }
+
+    .logo-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .plivo-logo {
+      width: 110px;
+      margin-bottom: 6px;
+    }
+
+    .tagline {
+      font-size: 11px;
+      font-weight: 400;
+      background: linear-gradient(271deg, #FF5900, #D900FF, #005EFF);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.3px;
+    }
+
+    .name {
+      font-size: 26px;
+      font-weight: 700;
+      color: #000;
+      text-align: center;
+      letter-spacing: -0.3px;
+      margin-bottom: 6px;
+    }
+
+    .title {
+      font-size: 13.5px;
+      font-weight: 300;
+      color: #5F5E5E;
+      text-align: center;
+      letter-spacing: -0.4px;
+      line-height: 1.4;
+    }
+
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      margin-top: 44px;
+      width: 100%;
+    }
+
+    .btn-pill {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 32px;
+      border-radius: 60px;
+      border: 1.5px solid #818181;
+      background: transparent;
+      font-family: 'Sora', sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      color: #000;
+      text-decoration: none;
+      cursor: pointer;
+      min-width: 180px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-pill:hover {
+      background: #f5f5f5;
+      border-color: #555;
+    }
+
+    .btn-pill:active {
+      transform: scale(0.97);
+    }
+
+    .btn-pill svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .bottom-section {
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 44px;
+      width: 100%;
+      position: relative;
+      z-index: 2;
+    }
+
+    .website {
+      font-size: 12px;
+      font-weight: 600;
+      color: #000;
+      text-align: center;
+      margin-bottom: 10px;
+      letter-spacing: -0.2px;
+    }
+
+    .cta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 22px;
+      border-radius: 60px;
+      border: 1px solid #d0d0d0;
+      background: #fff;
+      font-family: 'Sora', sans-serif;
+      font-size: 11px;
+      font-weight: 400;
+      color: #000;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .cta-pill:hover {
+      background: #f9f9f9;
+      border-color: #aaa;
+    }
+
+    .cta-pill .robot-icon {
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+    }
+
+    .gradient-bg {
+      position: absolute;
+      bottom: -10px;
+      right: -10px;
+      width: 200px;
+      height: auto;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.83;
+    }
+
+    /* Loading & Error states */
+    .state-message {
+      text-align: center;
+      color: #5F5E5E;
+      font-size: 14px;
+      font-weight: 300;
+      padding: 20px;
+    }
+
+    .state-message.error {
+      color: #d00;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #111;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: 'Sora', sans-serif;
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 100;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 440px) {
+      body {
+        padding: 0;
+        align-items: stretch;
+      }
+
+      .card {
+        max-width: none;
+        border-radius: 0;
+        min-height: 100dvh;
+        padding: 40px 36px 24px;
+        overflow: visible;
+      }
+
+      .buttons {
+        margin-top: 36px;
+      }
+
+      .bottom-section {
+        padding-top: 36px;
+      }
+    }
+
+    /* ===== DESKTOP / LARGE ===== */
+    @media (min-width: 768px) {
+      .card {
+        min-height: 640px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card" id="card">
+    <div class="logo-section">
+      <img class="plivo-logo" src="assets/Plivo-logo.png" alt="Plivo">
+      <span class="tagline">Human like AI agents</span>
+    </div>
+
+    <h1 class="name" id="person-name">Loading...</h1>
+    <p class="title" id="person-role"></p>
+
+    <div class="buttons" id="buttons" style="display:none">
+      <a id="btn-linkedin" href="#" target="_blank" rel="noopener noreferrer" class="btn-pill">
+        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+        </svg>
+        Linkedin
+      </a>
+      <button id="btn-email" class="btn-pill" onclick="copyEmail()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="2"/>
+          <path d="M22 4L12 13L2 4"/>
+        </svg>
+        Email
+      </button>
+    </div>
+
+    <div class="bottom-section">
+      <p class="website">www.plivo.com</p>
+      <a href="https://www.plivo.com" target="_blank" rel="noopener noreferrer" class="cta-pill">
+        <img class="robot-icon" src="assets/robot.png" alt="">
+        Let's build an AI agent
+      </a>
+    </div>
+
+    <img class="gradient-bg" id="gradient-bg" src="assets/gradient-bg.png" alt="">
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    function copyEmail() {
+      const email = document.getElementById('btn-email').dataset.email;
+      if (!email) return;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(email)
+          .then(() => showToast(`${email} copied!`))
+          .catch(() => fallbackCopy(email));
+      } else {
+        fallbackCopy(email);
+      }
+    }
+
+    function fallbackCopy(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast(`${text} copied!`);
+    }
+
+    async function loadPerson() {
+      const params = new URLSearchParams(window.location.search);
+      const personId = params.get('p');
+
+      if (!personId) {
+        document.getElementById('person-name').textContent = 'No person specified';
+        document.getElementById('person-role').textContent = 'Use ?p=person-slug in the URL';
+        document.getElementById('person-role').classList.add('state-message');
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/people/${encodeURIComponent(personId)}`);
+        if (!res.ok) {
+          document.getElementById('person-name').textContent = 'Person not found';
+          document.getElementById('person-role').textContent = 'Check the URL and try again';
+          document.getElementById('person-role').classList.add('state-message', 'error');
+          return;
+        }
+
+        const person = await res.json();
+        document.title = `${person.name} - Plivo`;
+        document.getElementById('person-name').textContent = person.name;
+        document.getElementById('person-role').textContent = person.role;
+
+        const buttons = document.getElementById('buttons');
+        const btnLinkedin = document.getElementById('btn-linkedin');
+        const btnEmail = document.getElementById('btn-email');
+
+        if (person.linkedin) {
+          btnLinkedin.href = person.linkedin;
+        } else {
+          btnLinkedin.style.display = 'none';
+        }
+
+        btnEmail.dataset.email = person.email;
+        buttons.style.display = 'flex';
+
+        if (person.gradientBg) {
+          document.getElementById('gradient-bg').src = person.gradientBg;
+        }
+
+      } catch (err) {
+        document.getElementById('person-name').textContent = 'Error loading';
+        document.getElementById('person-role').textContent = 'Could not connect to server';
+        document.getElementById('person-role').classList.add('state-message', 'error');
+      }
+    }
+
+    loadPerson();
+  </script>
+
+</body>
+</html>
