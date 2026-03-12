@@ -29,5 +29,37 @@
     "linkedin": "https://www.linkedin.com/in/dishasahdev/",
     "email": "disha@plivo.com",
     "gradientBg": ""
+  },
+  {
+    "id": "ayush-anand",
+    "name": "Ayush Anand",
+    "role": "Head of Product - Voice",
+    "linkedin": "",
+    "email": "ayush@plivo.com",
+    "gradientBg": ""
+  },
+  {
+    "id": "sagar-ashok-daliya",
+    "name": "Sagar Ashok Daliya",
+    "role": "Product Manager - Growth",
+    "linkedin": "",
+    "email": "sagar.daliya@plivo.com",
+    "gradientBg": ""
+  },
+  {
+    "id": "jayakrishnan-nair",
+    "name": "Jayakrishnan Nair",
+    "role": "Product Design Manager",
+    "linkedin": "",
+    "email": "jayakrishnan.nair@plivo.com",
+    "gradientBg": ""
+  },
+  {
+    "id": "nihal-manjunath",
+    "name": "Nihal Manjunath",
+    "role": "Forward Deployed Engineer",
+    "linkedin": "",
+    "email": "nihal.manjunath@plivo.com",
+    "gradientBg": ""
   }
 ]
