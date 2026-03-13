@@ -315,6 +315,7 @@
         `ORG:Plivo`,
         `TITLE:${person.role}`,
         `EMAIL;TYPE=WORK:${person.email}`,
+        person.phone ? `TEL;TYPE=WORK,VOICE:${person.phone}` : '',
         person.linkedin ? `URL:${person.linkedin}` : '',
         'END:VCARD'
       ].filter(Boolean).join('\r\n');
@@ -337,8 +338,26 @@
 
       if (!personId) {
         document.getElementById('person-name').textContent = 'Are you looking for somebody at Plivo?';
-        document.getElementById('person-role').textContent = '';
         document.getElementById('person-name').style.fontSize = '20px';
+        document.getElementById('person-role').textContent = '';
+
+        // Fetch all people and show as a list
+        try {
+          const res = await fetch('people.json');
+          const people = await res.json();
+          const listDiv = document.createElement('div');
+          listDiv.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:28px;width:80%;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)';
+          people.forEach(p => {
+            const a = document.createElement('a');
+            a.href = '?p=' + p.id;
+            a.textContent = p.name;
+            a.style.cssText = 'display:inline-flex;justify-content:center;align-items:center;padding:12px 32px;border-radius:60px;border:1.5px solid #818181;background:transparent;font-family:Sora,sans-serif;font-size:14px;font-weight:400;color:#000;text-decoration:none;min-width:180px;transition:all 0.2s ease;width:100%';
+            a.onmouseenter = () => { a.style.background = '#f5f5f5'; a.style.borderColor = '#555'; };
+            a.onmouseleave = () => { a.style.background = 'transparent'; a.style.borderColor = '#818181'; };
+            listDiv.appendChild(a);
+          });
+          document.getElementById('card').appendChild(listDiv);
+        } catch(e) {}
         return;
       }
 
