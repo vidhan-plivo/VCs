@@ -341,22 +341,36 @@
         document.getElementById('person-name').style.fontSize = '20px';
         document.getElementById('person-role').textContent = '';
 
-        // Fetch all people and show as a list
+        // Show dropdown to select a person
         try {
           const res = await fetch('people.json');
           const people = await res.json();
-          const listDiv = document.createElement('div');
-          listDiv.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:28px;width:80%;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)';
+          const dropdownDiv = document.createElement('div');
+          dropdownDiv.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80%;text-align:center;';
+
+          const select = document.createElement('select');
+          select.style.cssText = 'width:100%;padding:14px 20px;border-radius:60px;border:1.5px solid #818181;background:#fff;font-family:Sora,sans-serif;font-size:14px;font-weight:400;color:#000;appearance:none;-webkit-appearance:none;cursor:pointer;text-align:center;outline:none;';
+
+          const defaultOpt = document.createElement('option');
+          defaultOpt.textContent = 'Select a person';
+          defaultOpt.value = '';
+          defaultOpt.disabled = true;
+          defaultOpt.selected = true;
+          select.appendChild(defaultOpt);
+
           people.forEach(p => {
-            const a = document.createElement('a');
-            a.href = '?p=' + p.id;
-            a.textContent = p.name;
-            a.style.cssText = 'display:inline-flex;justify-content:center;align-items:center;padding:12px 32px;border-radius:60px;border:1.5px solid #818181;background:transparent;font-family:Sora,sans-serif;font-size:14px;font-weight:400;color:#000;text-decoration:none;min-width:180px;transition:all 0.2s ease;width:100%';
-            a.onmouseenter = () => { a.style.background = '#f5f5f5'; a.style.borderColor = '#555'; };
-            a.onmouseleave = () => { a.style.background = 'transparent'; a.style.borderColor = '#818181'; };
-            listDiv.appendChild(a);
+            const opt = document.createElement('option');
+            opt.value = p.id;
+            opt.textContent = p.name;
+            select.appendChild(opt);
           });
-          document.getElementById('card').appendChild(listDiv);
+
+          select.addEventListener('change', () => {
+            if (select.value) window.location.href = '?p=' + select.value;
+          });
+
+          dropdownDiv.appendChild(select);
+          document.getElementById('card').appendChild(dropdownDiv);
         } catch(e) {}
         return;
       }
